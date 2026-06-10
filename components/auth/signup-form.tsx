@@ -4,27 +4,20 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import Link from 'next/link'
+import { Eye, EyeOff } from 'lucide-react'
 
 export default function SignupForm() {
   const [tab, setTab] = useState<'buyer' | 'seller'>('buyer')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [location, setLocation] = useState('')
   const [bio, setBio] = useState('')
-  const [sizePreferences, setSizePreferences] = useState<string[]>([])
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const { signup } = useAuth()
   const router = useRouter()
-
-  const sizes = ['XS', 'S', 'M', 'L', 'XL']
-
-  const toggleSize = (size: string) => {
-    setSizePreferences((prev) =>
-      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]
-    )
-  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,11 +25,6 @@ export default function SignupForm() {
 
     if (!name || !email || !password) {
       setError('Please fill in all required fields')
-      return
-    }
-
-    if (tab === 'buyer' && sizePreferences.length === 0) {
-      setError('Please select at least one size preference')
       return
     }
 
@@ -55,7 +43,6 @@ export default function SignupForm() {
         userType: tab,
         location: tab === 'seller' ? location : undefined,
         bio: tab === 'seller' ? bio : undefined,
-        sizePreferences: tab === 'buyer' ? sizePreferences : undefined,
       })
       router.push('/profile')
     } catch (err) {
@@ -103,7 +90,9 @@ export default function SignupForm() {
 
       {/* Common Fields */}
       <div>
-        <label className="block text-sm font-medium text-foreground mb-2">Full name</label>
+        <label className="block text-sm font-medium text-foreground mb-2">
+          {tab === 'buyer' ? 'Full name' : 'Shop name'}
+        </label>
         <input
           type="text"
           value={name}
@@ -128,45 +117,24 @@ export default function SignupForm() {
 
       <div>
         <label className="block text-sm font-medium text-foreground mb-2">Password</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="••••••••"
-          className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition"
-          required
-        />
-      </div>
-
-      {/* Buyer-Specific Fields */}
-      {tab === 'buyer' && (
-        <div>
-          <label className="block text-sm font-medium text-foreground mb-3">
-            Size preferences
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {sizes.map((size) => (
-              <button
-                key={size}
-                type="button"
-                onClick={() => toggleSize(size)}
-                className={`px-4 py-2 rounded-full font-semibold transition ${
-                  sizePreferences.includes(size)
-                    ? 'text-white'
-                    : 'border-2 border-border text-foreground'
-                }`}
-                style={
-                  sizePreferences.includes(size)
-                    ? { backgroundColor: '#D85A30', borderColor: '#D85A30' }
-                    : {}
-                }
-              >
-                {size}
-              </button>
-            ))}
-          </div>
+        <div className="relative">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            className="w-full px-4 py-3 pr-12 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition"
+            required
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition"
+          >
+            {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+          </button>
         </div>
-      )}
+      </div>
 
       {/* Seller-Specific Fields */}
       {tab === 'seller' && (
@@ -179,7 +147,7 @@ export default function SignupForm() {
               type="text"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              placeholder="Your city"
+              placeholder="e.g. Nairobi, Mombasa, Kampala"
               className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition"
               required
             />
