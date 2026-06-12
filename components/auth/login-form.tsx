@@ -19,10 +19,16 @@ export default function LoginForm() {
     e.preventDefault()
     setError('')
     setIsLoading(true)
-
     try {
       await login(email, password)
-      router.push('/profile')
+      // Redirect based on user type — read fresh from localStorage
+      const saved = localStorage.getItem('inakaso_user')
+      const userData = saved ? JSON.parse(saved) : null
+      if (userData?.userType === 'seller') {
+        router.push('/seller')
+      } else {
+        router.push('/browse')
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed')
     } finally {
@@ -39,76 +45,38 @@ export default function LoginForm() {
       )}
 
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
-          Email address
-        </label>
-        <input
-          id="email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com"
-          className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition"
-          required
-        />
-        <p className="mt-1 text-xs text-muted-foreground">Try: buyer@inakaso.com</p>
+        <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">Email address</label>
+        <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition" required />
+        <p className="mt-1 text-xs text-muted-foreground">Buyer: buyer@inakaso.com · Seller: seller@inakaso.com</p>
       </div>
 
       <div>
-        <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
-          Password
-        </label>
+        <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">Password</label>
         <div className="relative">
-          <input
-            id="password"
-            type={showPassword ? 'text' : 'password'}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
-            className="w-full px-4 py-3 pr-12 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition"
-            required
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition"
-          >
+          <input id="password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="w-full px-4 py-3 pr-12 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition" required />
+          <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition">
             {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
           </button>
         </div>
-        <p className="mt-1 text-xs text-muted-foreground">Try: password</p>
+        <p className="mt-1 text-xs text-muted-foreground">Password: password</p>
       </div>
 
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full py-3 rounded-lg font-semibold text-white transition transform hover:scale-105 disabled:opacity-50"
-        style={{ backgroundColor: '#D85A30' }}
-      >
+      <button type="submit" disabled={isLoading} className="w-full py-3 rounded-lg font-semibold text-white transition transform hover:scale-105 disabled:opacity-50" style={{ backgroundColor: '#D85A30' }}>
         {isLoading ? 'Signing in...' : 'Sign in'}
       </button>
 
       <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-border"></div>
-        </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="px-2 bg-background text-muted-foreground">or</span>
-        </div>
+        <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border" /></div>
+        <div className="relative flex justify-center text-sm"><span className="px-2 bg-background text-muted-foreground">or</span></div>
       </div>
 
-      <button
-        type="button"
-        className="w-full py-3 rounded-lg font-semibold border-2 border-border text-foreground transition hover:bg-muted"
-      >
+      <button type="button" className="w-full py-3 rounded-lg font-semibold border-2 border-border text-foreground transition hover:bg-muted">
         Continue with Google
       </button>
 
       <p className="text-center text-sm text-muted-foreground">
         Don&apos;t have an account?{' '}
-        <Link href="/signup" className="font-semibold" style={{ color: '#D85A30' }}>
-          Sign up
-        </Link>
+        <Link href="/signup" className="font-semibold" style={{ color: '#D85A30' }}>Sign up</Link>
       </p>
     </form>
   )
