@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Heart, ShoppingCart } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 interface Item {
   id: string
@@ -144,7 +145,12 @@ export default function BrowseOutfitCard({
       {/* Card Info */}
       <div className="p-4 bg-background">
         <div className="mb-3">
-          <p className="text-sm font-semibold text-foreground">{seller}</p>
+          <Link
+            href={`/sellers/${seller.toLowerCase().replace(/\s+/g, '-')}`}
+            className="text-sm font-semibold text-foreground hover:text-primary transition"
+          >
+            {seller}
+          </Link>
           <p className="text-xs text-muted-foreground">{city} · {category}</p>
         </div>
 

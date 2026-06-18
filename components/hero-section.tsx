@@ -13,7 +13,7 @@ export default function HeroSection() {
           </h1>
 
           <p className="text-lg md:text-xl text-foreground/80 max-w-2xl mb-10 text-balance">
-            AI-powered outfit pairings from secondhand clothes. Shop complete looks, or mix and match individual pieces. Every item tells a story.
+            Curated outfit pairings from secondhand clothes. Shop complete looks, or mix and match individual pieces. Every item tells a story.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 max-w-md">
@@ -34,68 +34,65 @@ export default function HeroSection() {
         </div>
 
         {/* Right Column - Floating Outfit Cards */}
-        <div className="hidden md:block relative h-96">
-          <div className="absolute inset-0 flex items-center justify-center">
-            {/* Card 1 */}
-            <div
-              className="absolute w-48 h-64 rounded-2xl shadow-2xl border-4 border-white overflow-hidden animate-float"
-              style={{
-                background: 'linear-gradient(135deg, #D85A30 0%, #E8956B 50%, #F5B87D 100%)',
-                transform: 'rotate(8deg) translateX(-40px) translateY(20px)',
-                zIndex: 1
-              }}
-            >
-              <div className="absolute top-4 right-4 bg-white rounded-full px-3 py-1 shadow-lg">
-                <p className="text-xs font-bold text-foreground">KSh 2,800</p>
-              </div>
-              <div className="absolute bottom-4 left-4 bg-white rounded-full px-3 py-1 shadow-lg">
-                <p className="text-xs font-bold text-foreground">KSh 4,200</p>
-              </div>
-              <div className="absolute bottom-16 right-6 bg-white rounded-lg px-2 py-1 shadow-md flex items-center gap-1">
-                <span className="text-xs font-bold text-primary">AI ✦</span>
-              </div>
-            </div>
+        <div className="hidden md:flex relative h-[480px] items-center justify-center">
 
-            {/* Card 2 */}
-            <div
-              className="absolute w-48 h-64 rounded-2xl shadow-2xl border-4 border-white overflow-hidden animate-float-delay-1"
-              style={{
-                background: 'linear-gradient(135deg, #7F77DD 0%, #9B8FFF 50%, #B8A8FF 100%)',
-                transform: 'rotate(-6deg) translateX(10px)',
-                zIndex: 2
-              }}
-            >
-              <div className="absolute top-4 right-4 bg-white rounded-full px-3 py-1 shadow-lg">
-                <p className="text-xs font-bold text-foreground">KSh 3,500</p>
-              </div>
-              <div className="absolute bottom-4 left-4 bg-white rounded-full px-3 py-1 shadow-lg">
-                <p className="text-xs font-bold text-foreground">KSh 5,500</p>
-              </div>
-              <div className="absolute bottom-16 right-6 bg-white rounded-lg px-2 py-1 shadow-md flex items-center gap-1">
-                <span className="text-xs font-bold text-secondary">AI ✦</span>
-              </div>
-            </div>
-
-            {/* Card 3 */}
-            <div
-              className="absolute w-48 h-64 rounded-2xl shadow-2xl border-4 border-white overflow-hidden animate-float-delay-2"
-              style={{
-                background: 'linear-gradient(135deg, #20B2AA 0%, #4DB8A8 50%, #7AC8B8 100%)',
-                transform: 'rotate(4deg) translateX(50px) translateY(-30px)',
-                zIndex: 3
-              }}
-            >
-              <div className="absolute top-4 right-4 bg-white rounded-full px-3 py-1 shadow-lg">
-                <p className="text-xs font-bold text-foreground">KSh 3,200</p>
-              </div>
-              <div className="absolute bottom-4 left-4 bg-white rounded-full px-3 py-1 shadow-lg">
-                <p className="text-xs font-bold text-foreground">KSh 4,800</p>
-              </div>
-              <div className="absolute bottom-16 right-6 bg-white rounded-lg px-2 py-1 shadow-md flex items-center gap-1">
-                <span className="text-xs font-bold" style={{ color: '#20B2AA' }}>AI ✦</span>
-              </div>
+          {/* Card 1 — back left */}
+          <div
+            className="absolute w-44 h-64 rounded-2xl shadow-2xl border-4 border-white overflow-hidden animate-float"
+            style={{
+              transform: 'rotate(-8deg) translateX(-90px) translateY(30px)',
+              zIndex: 1,
+            }}
+          >
+            <img
+              src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400&q=80"
+              alt="Outfit"
+              className="w-full h-full object-cover object-top"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+            <div className="absolute bottom-3 left-3 bg-white rounded-full px-3 py-1 shadow-lg">
+              <p className="text-xs font-bold text-foreground">KSh 2,800</p>
             </div>
           </div>
+
+          {/* Card 2 — front centre */}
+          <div
+            className="absolute w-48 h-72 rounded-2xl shadow-2xl border-4 border-white overflow-hidden animate-float-delay-1"
+            style={{
+              transform: 'rotate(2deg) translateY(-10px)',
+              zIndex: 3,
+            }}
+          >
+            <img
+              src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=400&q=80"
+              alt="Outfit"
+              className="w-full h-full object-cover object-top"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+            <div className="absolute bottom-3 left-3 bg-white rounded-full px-3 py-1 shadow-lg">
+              <p className="text-xs font-bold" style={{ color: '#D85A30' }}>KSh 4,500</p>
+            </div>
+          </div>
+
+          {/* Card 3 — back right */}
+          <div
+            className="absolute w-44 h-64 rounded-2xl shadow-2xl border-4 border-white overflow-hidden animate-float-delay-2"
+            style={{
+              transform: 'rotate(7deg) translateX(90px) translateY(20px)',
+              zIndex: 2,
+            }}
+          >
+            <img
+              src="https://images.unsplash.com/photo-1485462537746-965f33f7f6a7?w=400&q=80"
+              alt="Outfit"
+              className="w-full h-full object-cover object-top"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+            <div className="absolute bottom-3 left-3 bg-white rounded-full px-3 py-1 shadow-lg">
+              <p className="text-xs font-bold" style={{ color: '#7F77DD' }}>KSh 3,800</p>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>

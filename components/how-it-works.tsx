@@ -25,7 +25,7 @@ export default function HowItWorks() {
                   </svg>
                 </div>
                 <div>
-                  <p className="font-semibold text-foreground mb-1">Browse AI-styled outfits</p>
+                  <p className="font-semibold text-foreground mb-1">Browse curated outfits</p>
                   <p className="text-sm">Curated from secondhand pieces</p>
                 </div>
               </div>
@@ -94,8 +94,8 @@ export default function HowItWorks() {
                   </svg>
                 </div>
                 <div>
-                  <p className="font-semibold text-foreground mb-1">AI pairs outfits</p>
-                  <p className="text-sm">Automatically creates complete looks</p>
+                  <p className="font-semibold text-foreground mb-1">Outfits created for you</p>
+                  <p className="text-sm">Your items styled into complete looks</p>
                 </div>
               </div>
               <div className="flex gap-4">

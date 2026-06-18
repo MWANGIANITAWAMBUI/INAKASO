@@ -1,7 +1,7 @@
 'use client'
 
 export default function MarqueeTicker() {
-  const marqueeText = 'AI Styled · Secondhand · Sustainable · Nairobi · Kampala · Dar es Salaam · Accra ·'
+  const marqueeText = 'Secondhand · Sustainable · Nairobi · Kampala · Dar es Salaam · Accra · Preloved · Unique Finds ·'
   
   return (
     <div className="w-full bg-background border-y border-border py-3 overflow-hidden">
