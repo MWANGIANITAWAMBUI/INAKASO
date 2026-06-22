@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
+import { X } from 'lucide-react'
 import BrowseNavbar from '@/components/browse-navbar'
 import FilterChips from '@/components/filter-chips'
 import SellerStrip from '@/components/seller-strip'
@@ -152,12 +154,20 @@ const mockOutfits: Outfit[] = [
 ]
 
 export default function BrowsePage() {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const boardId = searchParams.get('board')
+  const boardName = searchParams.get('boardName')
+  const isSavingToBoard = Boolean(boardId)
+
   const [selectedFilter, setSelectedFilter] = useState('All looks')
   const [selectedSeller, setSelectedSeller] = useState<string | null>(null)
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [savedToBoard, setSavedToBoard] = useState<Set<string>>(new Set())
+  const [savedToast, setSavedToast] = useState<string | null>(null)
 
   // Filter outfits
   const filteredOutfits = useMemo(() => {
@@ -221,6 +231,35 @@ export default function BrowsePage() {
     setCartItems((prev) => prev.filter(item => item.outfitId !== outfitId))
   }
 
+  const handleSaveToBoard = (outfitId: string, itemIds: string[]) => {
+    setSavedToBoard((prev) => new Set(prev).add(outfitId))
+    const count = itemIds.length
+    setSavedToast(
+      `Saved ${count} item${count > 1 ? 's' : ''} to "${boardName ?? 'board'}"`
+    )
+    setTimeout(() => setSavedToast(null), 2500)
+
+    // Persist into the actual board's outfitIds in localStorage
+    if (boardId) {
+      try {
+        const raw = localStorage.getItem('inakaso_boards')
+        const boards: Array<{ id: string; outfitIds: string[] }> = raw ? JSON.parse(raw) : []
+        const updated = boards.map((b) =>
+          b.id === boardId && !b.outfitIds.includes(outfitId)
+            ? { ...b, outfitIds: [...b.outfitIds, outfitId] }
+            : b
+        )
+        localStorage.setItem('inakaso_boards', JSON.stringify(updated))
+      } catch {
+        // ignore storage errors
+      }
+    }
+  }
+
+  const handleExitBoardMode = () => {
+    router.push('/browse')
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <BrowseNavbar
@@ -228,6 +267,32 @@ export default function BrowsePage() {
         onCartClick={() => setIsCartOpen(true)}
         onSearchChange={setSearchQuery}
       />
+
+      {/* Board saving mode banner */}
+      {isSavingToBoard && (
+        <div
+          className="sticky top-[72px] z-30 flex items-center justify-between gap-3 px-4 sm:px-6 lg:px-8 py-3"
+          style={{ backgroundColor: '#7F77DD' }}
+        >
+          <p className="text-sm font-semibold text-white">
+            Adding to <span className="underline">{boardName ?? 'your board'}</span> — tap the heart on items you like
+          </p>
+          <button
+            onClick={handleExitBoardMode}
+            className="shrink-0 flex items-center gap-1 text-xs font-semibold text-white/90 hover:text-white px-3 py-1.5 rounded-lg hover:bg-white/10 transition"
+          >
+            <X className="w-4 h-4" />
+            Done
+          </button>
+        </div>
+      )}
+
+      {/* Saved-to-board toast */}
+      {savedToast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-foreground text-background text-sm font-medium px-5 py-3 rounded-xl shadow-xl">
+          {savedToast}
+        </div>
+      )}
 
       <FilterChips activeFilter={selectedFilter} onFilterChange={setSelectedFilter} />
 
@@ -261,6 +326,9 @@ export default function BrowsePage() {
                   onAddToCart={handleAddToCart}
                   onItemHighlight={setHighlightedItemId}
                   highlightedItemId={highlightedItemId}
+                  savingToBoard={isSavingToBoard}
+                  isSavedToBoard={savedToBoard.has(outfit.id)}
+                  onSaveToBoard={handleSaveToBoard}
                 />
               </div>
             ))}

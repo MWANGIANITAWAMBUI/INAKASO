@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Heart, ShoppingCart } from 'lucide-react'
+import { Heart, ShoppingCart, Check } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -19,34 +19,26 @@ interface BrowseOutfitCardProps {
   category: string
   featured?: boolean
   isNew?: boolean
-  onAddToCart?: (outfitId: string) => void
+  onAddToCart?: (outfitId: string, itemIds: string[]) => void
   onItemHighlight?: (itemId: string | null) => void
   highlightedItemId?: string | null
+  savingToBoard?: boolean
+  isSavedToBoard?: boolean
+  onSaveToBoard?: (outfitId: string, itemIds: string[]) => void
 }
 
-// Photos matched exactly to each outfit id
-// out1: Office - wrap dress, boots
-// out2: Casual - linen shirt, canvas pants
-// out3: Formal - silk blouse, blazer, dress pants
-// out4: Boho - bohemian dress, sandals
-// out5: Streetwear - hoodie, cargo pants, sneakers
-// out6: Night out - bodysuit, sequin skirt, heeled boots
-// out7: Casual - denim jacket, white tee, jeans
-// out8: Formal - maxi dress, shawl, clutch
-// out9: Casual - crop top, shorts, flip flops
 const outfitPhotoMap: Record<string, string> = {
-  out1: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=800&q=80', // office dress boots
-  out2: 'https://images.unsplash.com/photo-1617952236317-0bd127407984?w=800&q=80', // linen casual
-  out3: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=800&q=80', // formal blazer
-  out4: 'https://images.unsplash.com/photo-1622519407650-3df9883f76a5?w=800&q=80', // boho dress
-  out5: 'https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&q=80', // streetwear hoodie
-  out6: 'https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=800&q=80', // night out
-  out7: 'https://images.unsplash.com/photo-1543076447-215ad9ba6923?w=800&q=80', // denim jeans
-  out8: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800&q=80', // maxi elegant
-  out9: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80', // summer casual
+  out1: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=800&q=80',
+  out2: 'https://images.unsplash.com/photo-1617952236317-0bd127407984?w=800&q=80',
+  out3: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=800&q=80',
+  out4: 'https://images.unsplash.com/photo-1622519407650-3df9883f76a5?w=800&q=80',
+  out5: 'https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&q=80',
+  out6: 'https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=800&q=80',
+  out7: 'https://images.unsplash.com/photo-1543076447-215ad9ba6923?w=800&q=80',
+  out8: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800&q=80',
+  out9: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80',
 }
 
-// Fallback gradients per category if image fails
 const categoryGradients: Record<string, string> = {
   Office:      'linear-gradient(135deg, #7F77DD 0%, #A89FFF 100%)',
   Casual:      'linear-gradient(135deg, #D85A30 0%, #F5B87D 100%)',
@@ -66,23 +58,41 @@ export default function BrowseOutfitCard({
   isNew = false,
   onAddToCart,
   onItemHighlight,
-  highlightedItemId
+  highlightedItemId,
+  savingToBoard = false,
+  isSavedToBoard = false,
+  onSaveToBoard
 }: BrowseOutfitCardProps) {
   const [isWishlisted, setIsWishlisted] = useState(false)
   const [imgError, setImgError] = useState(false)
-  const totalPrice = items.reduce((sum, item) => sum + item.price, 0)
+  // All items selected by default — buyer can deselect to build a custom cart
+  const [selectedIds, setSelectedIds] = useState<string[]>(items.map(i => i.id))
+
+  const selectedItems = items.filter(i => selectedIds.includes(i.id))
+  const selectedTotal = selectedItems.reduce((sum, item) => sum + item.price, 0)
+  const allSelected = selectedIds.length === items.length
 
   const photoUrl = outfitPhotoMap[id]
   const fallbackGradient = categoryGradients[category] ?? 'linear-gradient(135deg, #D85A30 0%, #F5B87D 100%)'
 
+  const toggleItem = (itemId: string) => {
+    setSelectedIds(prev =>
+      prev.includes(itemId) ? prev.filter(x => x !== itemId) : [...prev, itemId]
+    )
+  }
+
   return (
-    <div className={`rounded-2xl overflow-hidden bg-background card-hover-glow ${featured ? 'lg:col-span-2' : ''}`}>
+    <div
+      className={`rounded-2xl overflow-hidden bg-background card-hover-glow ${featured ? 'lg:col-span-2' : ''} ${
+        savingToBoard && isSavedToBoard ? 'ring-2 ring-offset-2' : ''
+      }`}
+      style={savingToBoard && isSavedToBoard ? { '--tw-ring-color': '#7F77DD' } as React.CSSProperties : {}}
+    >
       {/* Image Container */}
       <div
         className={`relative ${featured ? 'h-80 sm:h-96 md:h-[32rem]' : 'h-72'} group`}
         style={imgError || !photoUrl ? { background: fallbackGradient } : {}}
       >
-        {/* Photo */}
         {!imgError && photoUrl && (
           <Image
             src={photoUrl}
@@ -94,52 +104,70 @@ export default function BrowseOutfitCard({
           />
         )}
 
-        {/* Gradient overlay — darkens bottom so price tags pop */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
 
-        {/* New Today Badge */}
         {isNew && (
           <div className="absolute top-4 left-14 bg-secondary text-white px-3 py-1 rounded-full text-xs font-bold z-10">
             New today
           </div>
         )}
 
-        {/* Price Tag Stickers — right side, staggered */}
+        {/* Per-item checkboxes — buyer picks individual pieces */}
         <div className="absolute top-4 right-4 flex flex-col gap-2 z-10">
-          {items.map((item, idx) => (
-            <button
-              key={item.id}
-              onClick={() => onItemHighlight?.(highlightedItemId === item.id ? null : item.id)}
-              className={`px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all transform text-left ${
-                highlightedItemId === item.id
-                  ? 'bg-white text-foreground ring-2 scale-110 shadow-xl'
-                  : 'bg-white/90 text-foreground hover:bg-white hover:scale-105 shadow-md'
-              }`}
-              style={{
-                marginRight: `${idx * 6}px`,
-                // ring handled via className
-              }}
-            >
-              <span className="block text-[10px] text-muted-foreground leading-tight">{item.name}</span>
-              <span className="font-bold text-xs">KSh {item.price.toLocaleString()}</span>
-            </button>
-          ))}
+          {items.map((item, idx) => {
+            const isSelected = selectedIds.includes(item.id)
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  toggleItem(item.id)
+                  onItemHighlight?.(highlightedItemId === item.id ? null : item.id)
+                }}
+                className={`flex items-center gap-1.5 px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg text-[11px] sm:text-xs font-medium whitespace-nowrap transition-all transform text-left ${
+                  isSelected
+                    ? 'bg-white text-foreground shadow-md'
+                    : 'bg-white/50 text-foreground/50 hover:bg-white/80 shadow'
+                } ${highlightedItemId === item.id ? 'ring-2 ring-secondary scale-105' : ''}`}
+                style={{ marginRight: `${idx * 4}px` }}
+              >
+                <span
+                  className={`flex items-center justify-center w-4 h-4 rounded-full border-2 shrink-0 transition ${
+                    isSelected ? 'border-primary bg-primary' : 'border-foreground/30 bg-transparent'
+                  }`}
+                >
+                  {isSelected && <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />}
+                </span>
+                <span>
+                  <span className="block text-[10px] text-muted-foreground leading-tight">{item.name}</span>
+                  <span className="font-bold text-xs">KSh {item.price.toLocaleString()}</span>
+                </span>
+              </button>
+            )
+          })}
         </div>
 
-        {/* Wishlist Button */}
+        {/* Wishlist / Save-to-board Button */}
         <button
-          onClick={() => setIsWishlisted(!isWishlisted)}
-          className="absolute top-4 left-4 p-2 bg-white rounded-full shadow-md hover:shadow-lg transition-all z-20"
+          onClick={() => {
+            if (savingToBoard) {
+              onSaveToBoard?.(id, selectedIds)
+            } else {
+              setIsWishlisted(!isWishlisted)
+            }
+          }}
+          className={`absolute top-4 left-4 p-2 rounded-full shadow-md hover:shadow-lg transition-all z-20 ${
+            savingToBoard && isSavedToBoard ? '' : 'bg-white'
+          }`}
+          style={savingToBoard && isSavedToBoard ? { backgroundColor: '#7F77DD' } : {}}
         >
           <Heart
-            className={`w-5 h-5 ${isWishlisted ? 'fill-primary text-primary' : 'text-foreground'}`}
+            className={`w-5 h-5 ${
+              savingToBoard
+                ? isSavedToBoard ? 'fill-white text-white' : 'text-foreground'
+                : isWishlisted ? 'fill-primary text-primary' : 'text-foreground'
+            }`}
           />
         </button>
-
-        {/* AI Badge — bottom left */}
-        <div className="absolute bottom-4 left-4 bg-white/90 text-foreground px-3 py-1 rounded-full text-xs font-semibold z-10 shadow-sm">
-          AI styled ✦
-        </div>
       </div>
 
       {/* Card Info */}
@@ -157,19 +185,35 @@ export default function BrowseOutfitCard({
         <div className="flex items-center justify-between mb-4 pb-4 border-t border-border pt-3">
           <div>
             <p className="text-lg font-bold" style={{ color: '#D85A30' }}>
-              KSh {totalPrice.toLocaleString()}
+              KSh {selectedTotal.toLocaleString()}
             </p>
-            <p className="text-xs text-muted-foreground">{items.length} items</p>
+            <p className="text-xs text-muted-foreground">
+              {selectedIds.length} of {items.length} item{items.length > 1 ? 's' : ''} selected
+            </p>
           </div>
+          {!allSelected && selectedIds.length > 0 && (
+            <button
+              onClick={() => setSelectedIds(items.map(i => i.id))}
+              className="text-xs font-medium underline text-muted-foreground hover:text-foreground"
+            >
+              Select all
+            </button>
+          )}
         </div>
 
         <button
-          onClick={() => onAddToCart?.(id)}
-          className="w-full py-3 bg-foreground text-background font-semibold rounded-lg hover:bg-muted-foreground transition-colors flex items-center justify-center gap-2"
+          onClick={() => onAddToCart?.(id, selectedIds)}
+          disabled={selectedIds.length === 0}
+          className="w-full py-3 bg-foreground text-background font-semibold rounded-lg hover:bg-muted-foreground transition-colors flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <ShoppingCart className="w-4 h-4" />
-          <span className="hidden sm:inline">Add outfit to cart</span>
-          <span className="sm:hidden">Add</span>
+          <span>
+            {allSelected
+              ? 'Add full outfit to cart'
+              : selectedIds.length === 0
+                ? 'Select at least one item'
+                : `Add ${selectedIds.length} item${selectedIds.length > 1 ? 's' : ''} to cart`}
+          </span>
         </button>
       </div>
     </div>

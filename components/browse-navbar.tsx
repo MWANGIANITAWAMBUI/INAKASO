@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { Search, ShoppingCart, Bell, User } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/contexts/AuthContext'
 
 interface BrowseNavbarProps {
   cartItemCount?: number
@@ -21,6 +23,16 @@ export default function BrowseNavbar({
   const [showNotifications, setShowNotifications] = useState(false)
   const [toastVisible, setToastVisible] = useState(false)
   const notifRef = useRef<HTMLDivElement>(null)
+  const router = useRouter()
+  const { user } = useAuth()
+
+  const handleProfileClick = () => {
+    if (user) {
+      router.push('/profile')
+    } else {
+      router.push('/login')
+    }
+  }
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value
@@ -117,12 +129,12 @@ export default function BrowseNavbar({
             </button>
 
             {/* Profile */}
-            <Link
-              href="/profile"
+            <button
+              onClick={handleProfileClick}
               className="p-2 text-foreground hover:bg-muted rounded-lg transition-colors"
             >
               <User className="w-5 h-5" />
-            </Link>
+            </button>
 
           </div>
         </div>

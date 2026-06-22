@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Package, Boxes, ShoppingCart, DollarSign, Settings } from 'lucide-react'
+import { usePathname, useRouter } from 'next/navigation'
+import { LayoutDashboard, Package, Boxes, ShoppingCart, DollarSign, Settings, LogOut } from 'lucide-react'
+import { useAuth } from '@/contexts/AuthContext'
 
 const navItems = [
   { href: '/seller', icon: LayoutDashboard, label: 'Overview' },
@@ -15,6 +16,13 @@ const navItems = [
 
 export default function SidebarNav() {
   const pathname = usePathname()
+  const router = useRouter()
+  const { user, logout } = useAuth()
+
+  const handleLogout = () => {
+    logout()
+    router.push('/')
+  }
 
   return (
     <aside className="hidden md:flex md:flex-col w-64 bg-muted border-r border-border px-6 py-8 sticky top-0 h-screen">
@@ -49,10 +57,19 @@ export default function SidebarNav() {
       </nav>
 
       {/* Footer Info */}
-      <div className="pt-6 border-t border-border">
-        <p className="text-xs text-muted-foreground font-medium mb-2">Seller Account</p>
-        <p className="text-sm font-semibold text-foreground">Vintage Vibes</p>
-        <p className="text-xs text-muted-foreground">Nairobi, Kenya</p>
+      <div className="pt-6 border-t border-border space-y-3">
+        <div>
+          <p className="text-xs text-muted-foreground font-medium mb-2">Seller Account</p>
+          <p className="text-sm font-semibold text-foreground">{user?.name ?? 'Seller'}</p>
+          <p className="text-xs text-muted-foreground">{user?.location ?? ''}</p>
+        </div>
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 w-full px-4 py-2.5 rounded-lg font-medium text-sm text-foreground/70 hover:text-foreground hover:bg-background/50 transition-colors"
+        >
+          <LogOut className="w-4 h-4" />
+          Log out
+        </button>
       </div>
     </aside>
   )

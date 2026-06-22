@@ -12,7 +12,7 @@ interface Seller {
 
 interface SellerStripProps {
   sellers: Seller[]
-  selectedSellerId?: string
+  selectedSellerId?: string | null
   onSellerChange?: (sellerId: string | null) => void
 }
 
@@ -29,7 +29,7 @@ export default function SellerStrip({
           <button
             onClick={() => onSellerChange?.(null)}
             className={`flex-shrink-0 w-12 h-12 rounded-full border-2 flex items-center justify-center font-medium text-sm transition-all ${
-              selectedSellerId === undefined
+              selectedSellerId == null
                 ? 'border-secondary bg-secondary text-secondary-foreground'
                 : 'border-muted text-muted-foreground hover:border-secondary'
             }`}

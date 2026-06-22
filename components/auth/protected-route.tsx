@@ -33,7 +33,14 @@ export default function ProtectedRoute({ children, requiredUserType }: Protected
   }
 
   if (!user) {
-    return null
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="w-12 h-12 rounded-full border-4 border-muted border-t-primary animate-spin mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Redirecting to login...</p>
+        </div>
+      </div>
+    )
   }
 
   return <>{children}</>
