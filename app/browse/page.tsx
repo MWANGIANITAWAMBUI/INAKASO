@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { X } from 'lucide-react'
 import BrowseNavbar from '@/components/browse-navbar'
@@ -153,7 +153,7 @@ const mockOutfits: Outfit[] = [
   },
 ]
 
-export default function BrowsePage() {
+function BrowsePageContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const boardId = searchParams.get('board')
@@ -344,5 +344,21 @@ export default function BrowsePage() {
         onRemoveItem={handleRemoveItem}
       />
     </div>
+  )
+}
+
+function BrowsePageFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="w-10 h-10 rounded-full border-4 border-muted border-t-primary animate-spin" />
+    </div>
+  )
+}
+
+export default function BrowsePage() {
+  return (
+    <Suspense fallback={<BrowsePageFallback />}>
+      <BrowsePageContent />
+    </Suspense>
   )
 }
