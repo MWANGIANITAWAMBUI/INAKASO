@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Heart, ShoppingCart, Check } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { outfitPhotoMap } from '@/lib/outfits-data'
 
 interface Item {
   id: string
@@ -25,18 +26,6 @@ interface BrowseOutfitCardProps {
   savingToBoard?: boolean
   isSavedToBoard?: boolean
   onSaveToBoard?: (outfitId: string, itemIds: string[]) => void
-}
-
-const outfitPhotoMap: Record<string, string> = {
-  out1: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=800&q=80',
-  out2: 'https://images.unsplash.com/photo-1617952236317-0bd127407984?w=800&q=80',
-  out3: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=800&q=80',
-  out4: 'https://images.unsplash.com/photo-1622519407650-3df9883f76a5?w=800&q=80',
-  out5: 'https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&q=80',
-  out6: 'https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=800&q=80',
-  out7: 'https://images.unsplash.com/photo-1543076447-215ad9ba6923?w=800&q=80',
-  out8: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800&q=80',
-  out9: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80',
 }
 
 const categoryGradients: Record<string, string> = {

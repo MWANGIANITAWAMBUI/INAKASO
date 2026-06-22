@@ -23,9 +23,9 @@ const NOTIFS_KEY = 'inakaso_notifications_read'
 
 // ─── Default / mock data (used only if nothing saved yet) ────────────────────
 const defaultBoards: WishlistBoard[] = [
-  { id: 'board-1', name: 'Work fits', outfitIds: ['out-1', 'out-2', 'out-3', 'out-4'], gradients: ['linear-gradient(135deg, #D85A30 0%, #E8956B 100%)', 'linear-gradient(135deg, #7F77DD 0%, #A89FFF 100%)', 'linear-gradient(135deg, #C4A57B 0%, #E8CAA0 100%)', 'linear-gradient(135deg, #D85A30 0%, #E8956B 100%)'] },
-  { id: 'board-2', name: 'Weekend looks', outfitIds: ['out-5', 'out-6'], gradients: ['linear-gradient(135deg, #20B2AA 0%, #7AC8B8 100%)', 'linear-gradient(135deg, #D85A30 0%, #E8956B 100%)', 'linear-gradient(135deg, #7F77DD 0%, #A89FFF 100%)', 'linear-gradient(135deg, #20B2AA 0%, #7AC8B8 100%)'] },
-  { id: 'board-3', name: 'Date night', outfitIds: ['out-7', 'out-8', 'out-9'], gradients: ['linear-gradient(135deg, #7F77DD 0%, #A89FFF 100%)', 'linear-gradient(135deg, #C4A57B 0%, #E8CAA0 100%)', 'linear-gradient(135deg, #D85A30 0%, #E8956B 100%)', 'linear-gradient(135deg, #7F77DD 0%, #A89FFF 100%)'] },
+  { id: 'board-1', name: 'Work fits', outfitIds: ['out1', 'out2', 'out3', 'out4'], gradients: ['linear-gradient(135deg, #D85A30 0%, #E8956B 100%)', 'linear-gradient(135deg, #7F77DD 0%, #A89FFF 100%)', 'linear-gradient(135deg, #C4A57B 0%, #E8CAA0 100%)', 'linear-gradient(135deg, #D85A30 0%, #E8956B 100%)'] },
+  { id: 'board-2', name: 'Weekend looks', outfitIds: ['out5', 'out6'], gradients: ['linear-gradient(135deg, #20B2AA 0%, #7AC8B8 100%)', 'linear-gradient(135deg, #D85A30 0%, #E8956B 100%)', 'linear-gradient(135deg, #7F77DD 0%, #A89FFF 100%)', 'linear-gradient(135deg, #20B2AA 0%, #7AC8B8 100%)'] },
+  { id: 'board-3', name: 'Date night', outfitIds: ['out7', 'out8', 'out9'], gradients: ['linear-gradient(135deg, #7F77DD 0%, #A89FFF 100%)', 'linear-gradient(135deg, #C4A57B 0%, #E8CAA0 100%)', 'linear-gradient(135deg, #D85A30 0%, #E8956B 100%)', 'linear-gradient(135deg, #7F77DD 0%, #A89FFF 100%)'] },
 ]
 
 const mockPurchases: Purchase[] = [
